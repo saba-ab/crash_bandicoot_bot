@@ -3,7 +3,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from create_bot import dp, bot
-
+from data_base import sqlite_db
+from keyboards import admin_kb
 ID = None
 
 
@@ -17,7 +18,7 @@ class FSMAdmin(StatesGroup):
 async def moderator(message: types.message):
     global ID
     ID = message.from_user.id
-    await bot.send_message(message.from_user.id, 'how can i assist my moderator today ?')
+    await bot.send_message(message.from_user.id, 'how can i assist my moderator today ?', reply_markup=admin_kb.button_case_admin)
     await message.delete()
 
 # @dp.message_handler(commands='upload', state=None)
@@ -76,9 +77,8 @@ async def load_price(message: types.message, state: FSMContext):
         async with state.proxy() as data:
             data['price'] = float(message.text)
             await message.reply('You have successfully added item on listing.')
-        async with state.proxy() as data:
-            await message.reply(str(data))
-            await state.finish()
+        await sqlite_db.sql_add_command(state)
+        await state.finish()
 
 
 async def empty(message: types.message):

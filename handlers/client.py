@@ -2,7 +2,7 @@ from aiogram import types, Dispatcher
 from create_bot import dp
 from create_bot import bot
 from keyboards import kb_client
-from aiogram.types import ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from data_base import sqlite_db
 
 
@@ -66,6 +66,34 @@ async def main_series(message):
     await sqlite_db.sql_read(message)
     await bot.send_message(message.from_user.id, 'All three in one game is available on playstation store as Crash Bandicoot™ N. Sane Trilogy for 39.99 $\nhttps://store.playstation.com/en-us/product/UP0002-CUSA07402_00-CRASHNSANETRLOGY')
 
+inline = InlineKeyboardMarkup(row_width=1)
+inline_button = InlineKeyboardButton(
+    text='trilogy', callback_data="sanetrilogy")
+inline.add(inline_button)
+
+
+async def inline_trilogy(message: types.message):
+    await message.answer('inline', reply_markup=inline)
+
+
+async def callback_query(callback: types.CallbackQuery):
+    await callback.answer('daechiraa')
+
+
+sanetrilogy = InlineKeyboardMarkup(row_width=1)
+trilogy_button1 = InlineKeyboardButton(
+    text='crash bandicoot', url='https://en.wikipedia.org/wiki/Crash_Bandicoot_(video_game)')
+trilogy_button2 = InlineKeyboardButton(
+    text='crash bandicoot 2', url='https://en.wikipedia.org/wiki/Crash_Bandicoot_2:_Cortex_Strikes_Back')
+trilogy_button3 = InlineKeyboardButton(
+    text='crash bandicoot 3', url='https://en.wikipedia.org/wiki/Crash_Bandicoot:_Warped')
+
+sanetrilogy.add(trilogy_button1, trilogy_button2, trilogy_button3)
+
+
+async def trilogy(message: types.message):
+    await message.answer('WIKI : ', reply_markup=sanetrilogy)
+
 
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=['start', 'help'])
@@ -77,3 +105,6 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(crash, lambda message: any(
         keyword in message.text for keyword in ['crash', 'coco', 'bandicoot']))
     dp.register_message_handler(main_series, commands=['main_series'])
+    dp.register_message_handler(trilogy, commands=['wiki'])
+    dp.register_message_handler(inline_trilogy, commands=['test'])
+    dp.callback_query_handler(text='sanetrilogy')

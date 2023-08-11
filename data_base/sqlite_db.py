@@ -10,7 +10,7 @@ def sql_start():
     if base:
         print("Database connected")
         base.execute(
-            'CREATE TABLE IF NOT EXISTS main_series(img TEXT, name TEXT PRIMARY KEY, description TEXT, price TEXT )')
+            'CREATE TABLE IF NOT EXISTS main_series(img TEXT, name TEXT PRIMARY KEY, description TEXT, price TEXT)')
         base.commit()
 
 

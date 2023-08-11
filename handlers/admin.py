@@ -5,6 +5,8 @@ from aiogram import types, Dispatcher
 from create_bot import dp, bot
 from data_base import sqlite_db
 from keyboards import admin_kb
+import time
+import uuid
 ID = None
 
 
@@ -13,6 +15,10 @@ class FSMAdmin(StatesGroup):
     name = State()
     description = State()
     price = State()
+
+
+def generate_id(user_id):
+    return f'{user_id}_{int(time.time())}_{uuid.uuid4()}'
 
 
 async def moderator(message: types.message):
